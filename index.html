@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JBTI-酒杯人格测试</title>
+    <!-- 网页小图标 -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
         body{
@@ -31,7 +34,6 @@
             line-height:1.8;
         }
 
-        /* ———— 顶部固定栏（加高 + 内置语言按钮）———— */
         .progress{
             position: fixed;
             top: 0;
@@ -49,7 +51,6 @@
             justify-content: space-between;
         }
 
-        /* ———— 顶部小型语言按钮 ———— */
         .lang-switch {
             background: #A7998d;
             border: none;
@@ -70,7 +71,7 @@
             font-weight: bold;
         }
         .lang-inactive {
-            color: #d0d0d0;
+            color:#d0d0d0;
         }
         .lang-split {
             color: #fff;
@@ -136,11 +137,8 @@
 </head>
 <body>
 
-<!-- 顶部栏：进度 + 语言按钮 集成在一起 -->
 <div class="progress">
     <span id="progressText">已完成 0 / 共 10 题</span>
-
-    <!-- 小型语言切换按钮（在顶部栏内） -->
     <div class="lang-switch" id="langBtn">
         <span id="zhText">中文</span>
         <span class="lang-split">/</span>
@@ -264,7 +262,6 @@
 </div>
 
 <script>
-// 双语字典
 const i18n = {
   zh: {
     title: "JBTI-酒杯人格测试",
