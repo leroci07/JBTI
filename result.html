@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>你的酒杯人格结果</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            background:#f8f5f2;
+            font-family: PingFang SC, Microsoft YaHei, sans-serif;
+            padding:50px 8px 15px;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background:#fff;
+            color:#999;
+            padding: 12px 20px;
+            font-size:15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lang-switch {
+            background: #A7998d;
+            border: none;
+            padding: 0 4px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            height: 26px;
+            font-size:12px;
+        }
+        .lang-zh, .lang-en {
+            padding: 0 6px;
+            font-size:12px;
+        }
+        .lang-active {
+            color: #fff;
+            font-weight: bold;
+        }
+        .lang-inactive {
+            color:#d0d0d0;
+        }
+        .lang-split {
+            color: #fff;
+            font-size:12px;
+        }
+
+        .container{
+            max-width:600px;
+            margin:0 auto;
+            background:#fff;
+            padding:24px 25px 36px;
+            border-radius:16px;
+            line-height:1.6;
+            text-align:center;
+        }
+
+        .personality-image{
+            width:160px;
+            height:160px;
+            margin:0 auto 12px;
+            border-radius:12px;
+            object-fit: cover;
+        }
+
+        .name{
+            font-size:22px;
+            color:#7c6c64;
+            font-weight:bold;
+            margin-bottom:8px;
+        }
+        .tag{
+            color:#888;
+            margin-bottom:12px;
+            font-size:14px;
+        }
+        .desc{
+            color:#444;
+            margin-bottom:15px;
+            text-align:center;
+            font-size:15px;
+        }
+
+        .cup-image{
+            width:160px;
+            height:160px;
+            margin:10px auto 15px;
+            border-radius:12px;
+            object-fit: cover;
+        }
+
+        .link-btn{
+            background:#A7998D;
+            color:#fff;
+            border:none;
+            padding:12px 30px;
+            border-radius:30px;
+            font-size:16px;
+            margin:0 auto;
+            display:block;
+            width:100%;
+            max-width:260px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <span id="topTitle">你的酒杯人格结果</span>
+    <div class="lang-switch" id="langBtn">
+        <span id="zhText">中文</span>
+        <span class="lang-split">/</span>
+        <span id="enText">English</span>
+    </div>
+</div>
+
+<div class="container">
+    <img class="personality-image" id="personalityImage">
+    
+    <div class="name" id="name"></div>
+    <div class="tag" id="tag"></div>
+    <div class="desc" id="desc"></div>
+
+    <img class="cup-image" id="cupImage">
+
+    <a class="link-btn" id="actionBtn" 
+       href="https://m.modian.com/u/detail?uid=1007336906&utm_source=Appshare&utm_content=1007336906" 
+       target="_blank">
+       获取同款随身小酒杯
+    </a>
+</div>
+
+<script>
+const list = [
+    {
+        min:10,max:13,
+        name:"夜色孤饮者-圆系小黑咪",
+        tag:"清冷自持｜高边界感｜清醒慢热｜小众审美",
+        desc:"你是典型的向内独处型人格，反感无效社交，习惯独自消化所有情绪。于你而言，小酌从不是热闹的应酬，而是深夜专属的精神避难所。外表清冷克制，内心细腻敏感，自带疏离高级感，只偏爱安静、简单、不被打扰的微醺时刻，温柔又有棱角。",
+        personalityImg:"RG1.01.jpg",
+        cupImg:"JB1.01.jpg",
+        enName:"Night Solitary Drinker - Round Black Cat",
+        enTag:"Calm & Self-restrained | Clear Boundary | Slow & Reserved | Niche Aesthetic",
+        enDesc:"You are an introverted personality who dislikes meaningless social interaction and deals with emotions alone. For you, drinking is not a lively entertainment, but a private shelter at night. You look cold outside but sensitive inside, preferring quiet, undisturbed tipsy time."
+    },
+    {
+        min:14,max:17,
+        name:"温懦小酌家-圆系奶修狗",
+        tag:"共情柔软｜慢热害羞｜温和内耗｜软糯治愈",
+        desc:"天生心软温柔，共情力爆棚，习惯善待身边所有人。不喜欢喧嚣吵闹，只贪恋浅酒、晚风与安稳的小日常。一杯温和小甜酒，就能抚平疲惫与内耗，安静、软糯、治愈，是自带温柔磁场的 I 系小酌选手。",
+        personalityImg:"RG1.02.jpg",
+        cupImg:"JB1.02.jpg",
+        enName:"Gentle Sipping Lover - Round Milk Puppy",
+        enTag:"Empathetic & Soft | Shy & Slow | Mild Inner Worry | Warm Healing",
+        enDesc:"Born gentle and kind, you are highly empathetic and treat everyone kindly. You hate noise and love soft wine, night breeze and peaceful daily life. A cup of sweet light wine eases your tiredness, making you a warm and healing quiet sipper."
+    },
+    {
+        min:18,max:21,
+        name:"佛系漫游客-圆系懒咩咩",
+        tag:"佛系淡然｜低欲望｜向往自由｜清氧疏离",
+        desc:"性格随性淡然，拒绝内卷与束缚，偏爱松弛自在的生活节奏。不爱浓烈酒局，只喜欢淡淡浅酌、放空发呆、亲近自然。你不需要热闹取悦自己，独处小酌、安静放空，就是你最好的解压方式。",
+        personalityImg:"RG1.03.jpg",
+        cupImg:"JB1.03.jpg",
+        enName:"Buddha-style Wanderer - Round Lazy Sheep",
+        enTag:"Easy & Calm | Low Desire | Freedom-loving | Fresh & Aloof",
+        enDesc:"You live a casual and relaxed life, refusing pressure and restraint. You dislike heavy drinking parties and prefer light sipping, relaxing and getting close to nature. Quiet alone drinking is your best way to relieve stress."
+    },
+    {
+        min:22,max:25,
+        name:"氛围微醺官-锥系元气喵",
+        tag:"元气鲜活｜乐观外放｜感染力强｜热烈明媚",
+        desc:"天生氛围感王者，热爱相聚、喜欢热闹、擅长带动情绪。微醺会放大你的开朗与松弛，走到哪里都是焦点。爱好看、爱浪漫、爱拍照出片，用热烈的快乐感染身边每一个人，是妥妥的快乐 E 人。",
+        personalityImg:"RG1.04.jpg",
+        cupImg:"JB1.04.jpg",
+        enName:"Vibe Tipsy Master - Cone Vital Cat",
+        enTag:"Vital & Fresh | Optimistic & Outgoing | Infectious | Bright & Passionate",
+        enDesc:"A natural vibe leader who loves gatherings and lively moments. Tipsiness makes you more relaxed and outgoing. You love beauty, romance and taking photos, bringing joy to everyone around you as a typical energetic extrovert."
+    },
+    {
+        min:26,max:29,
+        name:"暖心酒搭子-锥系暖汪汪",
+        tag:"真诚外向｜重情重义｜高亲和力｜温暖热忱",
+        desc:"重感情、爱陪伴，是所有人心中的满分酒搭子。喜欢好友小聚、轻松闲聊、热闹小酌，你把陪伴看得很重，用真诚和温柔包裹身边人。热烈坦率、温暖治愈，微醺时刻，最适合结伴而行。",
+        personalityImg:"RG1.05.jpg",
+        cupImg:"JB1.05.jpg",
+        enName:"Warm Drinking Buddy - Cone Warm Puppy",
+        enTag:"Sincere & Outgoing | Loyal & Affectionate | High Affinity | Warm Enthusiastic",
+        enDesc:"You value friendship and companionship, being the perfect drinking partner for others. You enjoy small gatherings and casual chats with friends. Sincere and warm, you are always ready to share pleasant tipsy time with your loved ones."
+    },
+    {
+        min:30,max:33,
+        name:"晚风浪漫诗人-锥系漫羊羊",
+        tag:"随性浪漫｜不受束缚｜通透洒脱｜自由感性",
+        desc:"灵魂天生自由，讨厌规矩束缚，自带浪漫文艺气质。偏爱晚风、夜景、户外散步与随性浅酌，不被生活定义，不被情绪困住，微醺是你解锁浪漫、拥抱自由的最佳仪式。",
+        personalityImg:"RG1.06.jpg",
+        cupImg:"JB1.06.jpg",
+        enName:"Night Breeze Romantic Poet - Cone Casual Sheep",
+        enTag:"Casual & Romantic | Unrestrained | Free & Easy | Emotional & Liberal",
+        enDesc:"Your soul is free and romantic, tired of rigid rules. You love night breeze, night views, outdoor walks and casual light drinking. Tipsiness is your best ritual to embrace romance and freedom."
+    },
+    {
+        min:34,max:40,
+        name:"仪式感收藏家-浪漫小苹果（隐藏款）",
+        tag:"可I可E｜审美高阶｜收藏执念｜小众浪漫",
+        desc:"全网稀有复合型微醺人格，动静自如、收放随心。独处时安静自愈，合群时从容松弛，你执着生活美学、偏爱手作小众、追求限定专属感。把小酌当成精致仪式，把随身酒杯当成专属浪漫，审美独特、拒绝撞款，是独一份的高阶微醺玩家。",
+        personalityImg:"RG1.07.jpg",
+        cupImg:"JB1.07.jpg",
+        enName:"Ritual Collector - Romantic Apple (Hidden Limited)",
+        enTag:"Ambivert | High-level Aesthetic | Collector Mind | Niche Romance",
+        enDesc:"A rare composite tipsy personality with flexible social skills. Quiet when alone, elegant in groups. You pursue life aesthetics, niche design and exclusive ritual sense. You regard drinking as a delicate ritual and own unique taste as a high-level wine lover."
+    }
+];
+
+const i18n = {
+  zh: {
+    topTitle: "你的酒杯人格结果",
+    btn: "获取同款随身小酒杯"
+  },
+  en: {
+    topTitle: "Your Wine Cup Personality",
+    btn: "Get Your Portable Wine Cup"
+  }
+};
+
+const urlParams = new URLSearchParams(window.location.search);
+const score = parseInt(urlParams.get("score"));
+let currentLang = urlParams.get('lang') || 'zh';
+
+const res = list.find(item => score >= item.min && score <= item.max);
+
+const topTitle = document.getElementById("topTitle");
+const nameEl = document.getElementById("name");
+const tagEl = document.getElementById("tag");
+const descEl = document.getElementById("desc");
+const personalityImage = document.getElementById("personalityImage");
+const cupImage = document.getElementById("cupImage");
+const actionBtn = document.getElementById("actionBtn");
+const langBtn = document.getElementById("langBtn");
+const zhText = document.getElementById("zhText");
+const enText = document.getElementById("enText");
+
+function updateLangBtn() {
+  if (currentLang === "zh") {
+    zhText.className = "lang-zh lang-active";
+    enText.className = "lang-en lang-inactive";
+  } else {
+    zhText.className = "lang-zh lang-inactive";
+    enText.className = "lang-en lang-active";
+  }
+}
+
+function render() {
+  const dict = i18n[currentLang];
+  topTitle.innerText = dict.topTitle;
+  actionBtn.innerText = dict.btn;
+
+  if (currentLang === "zh") {
+    nameEl.innerText = res.name;
+    tagEl.innerText = res.tag;
+    descEl.innerText = res.desc;
+  } else {
+    nameEl.innerText = res.enName;
+    tagEl.innerText = res.enTag;
+    descEl.innerText = res.enDesc;
+  }
+  
+  personalityImage.src = res.personalityImg;
+  cupImage.src = res.cupImg;
+  
+  updateLangBtn();
+}
+
+langBtn.addEventListener("click", () => {
+  currentLang = currentLang === "zh" ? "en" : "zh";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

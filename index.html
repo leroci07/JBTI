@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JBTI-酒杯人格测试</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            background:#f8f5f2;
+            font-family: PingFang SC, Microsoft YaHei, sans-serif;
+            padding:60px 8px 20px;
+        }
+
+        .container{
+            max-width:700px;
+            margin:0 auto;
+            background:#fff;
+            padding:30px;
+            border-radius:16px;
+        }
+        h1{
+            text-align:center;
+            color:#7c6c64;
+            margin-bottom:10px;
+        }
+        .intro{
+            text-align:center;
+            color:#666;
+            margin-bottom:20px;
+            line-height:1.8;
+        }
+
+        /* ———— 顶部固定栏（加高 + 内置语言按钮）———— */
+        .progress{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background:#fff;
+            text-align:center;
+            color:#999;
+            padding: 14px 20px;
+            font-size:15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ———— 顶部小型语言按钮 ———— */
+        .lang-switch {
+            background: #A7998d;
+            border: none;
+            padding: 0 4px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            height: 26px;
+            font-size:12px;
+        }
+        .lang-zh, .lang-en {
+            padding: 0 6px;
+            font-size:12px;
+        }
+        .lang-active {
+            color: #fff;
+            font-weight: bold;
+        }
+        .lang-inactive {
+            color: #d0d0d0;
+        }
+        .lang-split {
+            color: #fff;
+            font-size:12px;
+        }
+
+        .question{
+            margin-bottom:30px;
+        }
+        .q-title{
+            font-size:16px;
+            font-weight:bold;
+            margin-bottom:14px;
+            color:#333;
+        }
+        .options{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        }
+        .option-item{
+            display:block;
+            padding:14px 16px;
+            background:#FFFDFB;
+            border:1px solid #f1ebe4;
+            border-radius:12px;
+            cursor:pointer;
+            transition:0.2s;
+        }
+        .option-item:hover{
+            background:#f8f3ee;
+        }
+        input[type="radio"]{
+            display:none;
+        }
+        input[type="radio"]:checked + .option-item{
+            background:#D9C8B9;
+            color:#5a4d3f;
+            border-color:#D9C8B9;
+        }
+        button{
+            background:#D9C8B9;
+            color:#fff;
+            border:none;
+            padding:14px 30px;
+            border-radius:30px;
+            font-size:16px;
+            margin:30px auto 0;
+            display:block;
+            cursor:pointer;
+            width:100%;
+            max-width:260px;
+            opacity:0.6;
+            pointer-events:none;
+            transition:0.3s;
+        }
+        button.active{
+            background:#A7998d;
+            opacity:1;
+            pointer-events:auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 顶部栏：进度 + 语言按钮 集成在一起 -->
+<div class="progress">
+    <span id="progressText">已完成 0 / 共 10 题</span>
+
+    <!-- 小型语言切换按钮（在顶部栏内） -->
+    <div class="lang-switch" id="langBtn">
+        <span id="zhText">中文</span>
+        <span class="lang-split">/</span>
+        <span id="enText">English</span>
+    </div>
+</div>
+
+<div class="container">
+    <h1 id="pageTitle">JBTI-酒杯人格测试</h1>
+    <div class="intro" id="introText">
+        你的微醺方式，藏着最真实的酒杯人格。<br>
+        有人偏爱深夜独酌，安静自愈；<br>
+        有人喜欢晚风相伴，浪漫随性；<br>
+        有人热衷热闹相聚，快乐释放。<br><br>
+        回答10道题，找到你的本命微醺人格与专属酒杯
+    </div>
+
+    <form id="quiz">
+        <div class="question">
+            <div class="q-title" data-i18n="q1">第1题：你理想的微醺时刻，更偏向哪种场景？</div>
+            <div class="options">
+                <label><input type="radio" name="q1" value="1"><div class="option-item" data-i18n="q1a">A. 深夜独处宅家，一人安静独酌</div></label>
+                <label><input type="radio" name="q1" value="2"><div class="option-item" data-i18n="q1b">B. 一对一密友小聚，轻声闲聊慢饮</div></label>
+                <label><input type="radio" name="q1" value="3"><div class="option-item" data-i18n="q1c">C. 多人欢乐聚餐，享受热闹酒局氛围</div></label>
+                <label><input type="radio" name="q1" value="4"><div class="option-item" data-i18n="q1d">D. 户外晚风散步、露营，随性自由小酌</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q2">第2题：日常更偏爱什么口味的酒？</div>
+            <div class="options">
+                <label><input type="radio" name="q2" value="1"><div class="option-item" data-i18n="q2a">A. 清冽低度果酒，安静治愈、低负担</div></label>
+                <label><input type="radio" name="q2" value="2"><div class="option-item" data-i18n="q2b">B. 温润柔和甜酒，口感绵密、舒缓情绪</div></label>
+                <label><input type="radio" name="q2" value="3"><div class="option-item" data-i18n="q2c">C. 高颜值特调/气泡酒，好看上镜、氛围感强</div></label>
+                <label><input type="radio" name="q2" value="4"><div class="option-item" data-i18n="q2d">D. 清酒/醇厚浅烈款，克制浅饮、质感高级</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q3">第3题：微醺状态下，你的性格会变成？</div>
+            <div class="options">
+                <label><input type="radio" name="q3" value="1"><div class="option-item" data-i18n="q3a">A. 愈发安静内敛，沉浸自我世界</div></label>
+                <label><input type="radio" name="q3" value="2"><div class="option-item" data-i18n="q3b">B. 温柔感性细腻，只对熟人敞开心扉</div></label>
+                <label><input type="radio" name="q3" value="3"><div class="option-item" data-i18n="q3c">C. 活泼外放开朗，主动活跃全场气氛</div></label>
+                <label><input type="radio" name="q3" value="4"><div class="option-item" data-i18n="q3d">D. 松弛淡然佛系，保持清醒适度微醺</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q4">第4题：情绪低落、倍感疲惫时，你会如何借酒解压？</div>
+            <div class="options">
+                <label><input type="radio" name="q4" value="1"><div class="option-item" data-i18n="q4a">A. 独自浅饮消化情绪，默默自愈疗伤</div></label>
+                <label><input type="radio" name="q4" value="2"><div class="option-item" data-i18n="q4b">B. 和知心好友小酌倾诉，慢慢缓解内耗</div></label>
+                <label><input type="radio" name="q4" value="3"><div class="option-item" data-i18n="q4c">C. 奔赴热闹局放松，用欢乐冲淡坏心情</div></label>
+                <label><input type="radio" name="q4" value="4"><div class="option-item" data-i18n="q4d">D. 独自外出小坐浅酌，冷静梳理思绪</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q5">第5题：在社交酒局里，你的第一反应是？</div>
+            <div class="options">
+                <label><input type="radio" name="q5" value="1"><div class="option-item" data-i18n="q5a">A. 本能抗拒，能推则推，偏爱独处</div></label>
+                <label><input type="radio" name="q5" value="2"><div class="option-item" data-i18n="q5b">B. 只参与熟人小圈子，拒绝无效社交</div></label>
+                <label><input type="radio" name="q5" value="3"><div class="option-item" data-i18n="q5c">C. 主动融入氛围，享受相聚的热闹</div></label>
+                <label><input type="radio" name="q5" value="4"><div class="option-item" data-i18n="q5d">D. 随性随缘，可独处可合群，收放自如</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q6">第6题：如果你有一个随身小酒杯，最看重哪一种气质？</div>
+            <div class="options">
+                <label><input type="radio" name="q6" value="1"><div class="option-item" data-i18n="q6a">A. 圆润低调、简约内敛，安静不张扬</div></label>
+                <label><input type="radio" name="q6" value="2"><div class="option-item" data-i18n="q6b">B. 软萌治愈、温柔百搭，日常耐看治愈</div></label>
+                <label><input type="radio" name="q6" value="3"><div class="option-item" data-i18n="q6c">C. 造型别致、亮眼吸睛，拍照出圈出片</div></label>
+                <label><input type="radio" name="q6" value="4"><div class="option-item" data-i18n="q6d">D. 小众限定、设计独特，自带仪式专属感</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q7">第7题：对你而言，「微醺」真正的意义是？</div>
+            <div class="options">
+                <label><input type="radio" name="q7" value="1"><div class="option-item" data-i18n="q7a">A. 隔绝外界喧嚣，专属自我的避风港湾</div></label>
+                <label><input type="radio" name="q7" value="2"><div class="option-item" data-i18n="q7b">B. 平淡生活的温柔调剂，治愈日常疲惫</div></label>
+                <label><input type="radio" name="q7" value="3"><div class="option-item" data-i18n="q7c">C. 释放所有情绪，解锁自由快乐的状态</div></label>
+                <label><input type="radio" name="q7" value="4"><div class="option-item" data-i18n="q7d">D. 认真对待生活，把小酌做成精致仪式</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q8">第8题：喝酒时的饮食习惯，更贴合哪一种？</div>
+            <div class="options">
+                <label><input type="radio" name="q8" value="1"><div class="option-item" data-i18n="q8a">A. 无需佐食，一人小酌、静心品饮</div></label>
+                <label><input type="radio" name="q8" value="2"><div class="option-item" data-i18n="q8b">B. 搭配甜点小食，温柔惬意享受慢时光</div></label>
+                <label><input type="radio" name="q8" value="3"><div class="option-item" data-i18n="q8c">C. 搭配聚餐小吃，边吃边喝欢乐尽兴</div></label>
+                <label><input type="radio" name="q8" value="4"><div class="option-item" data-i18n="q8d">D. 随性简单，随心浅尝，不刻意将就</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q9">第9题：面对生活节奏，你更向往？</div>
+            <div class="options">
+                <label><input type="radio" name="q9" value="1"><div class="option-item" data-i18n="q9a">A. 慢节奏独处生活，安静自在不被打扰</div></label>
+                <label><input type="radio" name="q9" value="2"><div class="option-item" data-i18n="q9b">B. 安稳温柔日常，平淡舒服、温暖治愈</div></label>
+                <label><input type="radio" name="q9" value="3"><div class="option-item" data-i18n="q9c">C. 丰富热闹日常，频繁相聚、鲜活有趣</div></label>
+                <label><input type="radio" name="q9" value="4"><div class="option-item" data-i18n="q9d">D. 自由无拘生活，随性浪漫、不受束缚</div></label>
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="q-title" data-i18n="q10">第10题：选择喝酒节奏，你更倾向于？</div>
+            <div class="options">
+                <label><input type="radio" name="q10" value="1"><div class="option-item" data-i18n="q10a">A. 小口慢品，细细沉浸，独享安静时光</div></label>
+                <label><input type="radio" name="q10" value="2"><div class="option-item" data-i18n="q10b">B. 适量浅饮，温和舒缓，舒适放松为主</div></label>
+                <label><input type="radio" name="q10" value="3"><div class="option-item" data-i18n="q10c">C. 随性畅饮，跟随氛围，尽兴享受当下</div></label>
+                <label><input type="radio" name="q10" value="4"><div class="option-item" data-i18n="q10d">D. 克制浅尝，点到为止，维持高级微醺感</div></label>
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn">查看我的酒杯人格</button>
+    </form>
+</div>
+
+<script>
+// 双语字典
+const i18n = {
+  zh: {
+    title: "JBTI-酒杯人格测试",
+    intro: `你的微醺方式，藏着最真实的酒杯人格。<br>有人偏爱深夜独酌，安静自愈；<br>有人喜欢晚风相伴，浪漫随性；<br>有人热衷热闹相聚，快乐释放。<br><br>回答10道题，找到你的本命微醺人格与专属酒杯`,
+    progress: `已完成 {done} / 共 10 题`,
+    btn: "查看我的酒杯人格",
+    alert: "请完成所有题目再查看结果哦～",
+    q1:"第1题：你理想的微醺时刻，更偏向哪种场景？", q1a:"A. 深夜独处宅家，一人安静独酌", q1b:"B. 一对一密友小聚，轻声闲聊慢饮", q1c:"C. 多人欢乐聚餐，享受热闹酒局氛围", q1d:"D. 户外晚风散步、露营，随性自由小酌",
+    q2:"第2题：日常更偏爱什么口味的酒？", q2a:"A. 清冽低度果酒，安静治愈、低负担", q2b:"B. 温润柔和甜酒，口感绵密、舒缓情绪", q2c:"C. 高颜值特调/气泡酒，好看上镜、氛围感强", q2d:"D. 清酒/醇厚浅烈款，克制浅饮、质感高级",
+    q3:"第3题：微醺状态下，你的性格会变成？", q3a:"A. 愈发安静内敛，沉浸自我世界", q3b:"B. 温柔感性细腻，只对熟人敞开心扉", q3c:"C. 活泼外放开朗，主动活跃全场气氛", q3d:"D. 松弛淡然佛系，保持清醒适度微醺",
+    q4:"第4题：情绪低落、倍感疲惫时，你会如何借酒解压？", q4a:"A. 独自浅饮消化情绪，默默自愈疗伤", q4b:"B. 和知心好友小酌倾诉，慢慢缓解内耗", q4c:"C. 奔赴热闹局放松，用欢乐冲淡坏心情", q4d:"D. 独自外出小坐浅酌，冷静梳理思绪",
+    q5:"第5题：在社交酒局里，你的第一反应是？", q5a:"A. 本能抗拒，能推则推，偏爱独处", q5b:"B. 只参与熟人小圈子，拒绝无效社交", q5c:"C. 主动融入氛围，享受相聚的热闹", q5d:"D. 随性随缘，可独处可合群，收放自如",
+    q6:"第6题：如果你有一个随身小酒杯，最看重哪一种气质？", q6a:"A. 圆润低调、简约内敛，安静不张扬", q6b:"B. 软萌治愈、温柔百搭，日常耐看治愈", q6c:"C. 造型别致、亮眼吸睛，拍照出圈出片", q6d:"D. 小众限定、设计独特，自带仪式专属感",
+    q7:"第7题：对你而言，「微醺」真正的意义是？", q7a:"A. 隔绝外界喧嚣，专属自我的避风港湾", q7b:"B. 平淡生活的温柔调剂，治愈日常疲惫", q7c:"C. 释放所有情绪，解锁自由快乐的状态", q7d:"D. 认真对待生活，把小酌做成精致仪式",
+    q8:"第8题：喝酒时的饮食习惯，更贴合哪一种？", q8a:"A. 无需佐食，一人小酌、静心品饮", q8b:"B. 搭配甜点小食，温柔惬意享受慢时光", q8c:"C. 搭配聚餐小吃，边吃边喝欢乐尽兴", q8d:"D. 随性简单，随心浅尝，不刻意将就",
+    q9:"第9题：面对生活节奏，你更向往？", q9a:"A. 慢节奏独处生活，安静自在不被打扰", q9b:"B. 安稳温柔日常，平淡舒服、温暖治愈", q9c:"C. 丰富热闹日常，频繁相聚、鲜活有趣", q9d:"D. 自由无拘生活，随性浪漫、不受束缚",
+    q10:"第10题：选择喝酒节奏，你更倾向于？", q10a:"A. 小口慢品，细细沉浸，独享安静时光", q10b:"B. 适量浅饮，温和舒缓，舒适放松为主", q10c:"C. 随性畅饮，跟随氛围，尽兴享受当下", q10d:"D. 克制浅尝，点到为止，维持高级微醺感"
+  },
+  en: {
+    title: "JBTI - Wine Glass Personality Test",
+    intro: `The way you get tipsy reveals your true personality.<br>Some love drinking alone at night; some prefer romance with wind;<br>some enjoy lively gatherings.<br><br>Answer 10 questions to find your true drinking personality & glass.`,
+    progress: `Completed {done} / 10`,
+    btn: "Get My Result",
+    alert: "Please answer all questions before submitting.",
+    q1:"Q1: Your ideal tipsy scene?", q1a:"A. Drink alone quietly at home", q1b:"B. Chat slowly with close friend", q1c:"C. Enjoy a lively party", q1d:"D. Drink casually outdoors/walking",
+    q2:"Q2: Your favorite wine taste?", q2a:"A. Light fruity wine, healing & gentle", q2b:"B. Soft sweet wine, smooth & relaxing", q2c:"C. Sparkling/pretty cocktail, stylish", q2d:"D. Sake/mellow wine, elegant & advanced",
+    q3:"Q3: Your personality when tipsy?", q3a:"A. Quiet & inner-focused", q3b:"B. Gentle & emotional to close ones", q3c:"C. Active & cheerful", q3d:"D. Relaxed & calm",
+    q4:"Q4: How to relieve stress with drink?", q4a:"A. Heal alone quietly", q4b:"B. Talk with close friend over drink", q4c:"C. Relax in lively atmosphere", q4d:"D. Calm down alone outside",
+    q5:"Q5: Your reaction in social drinking?", q5a:"A. Prefer alone, avoid crowds", q5b:"B. Only close circles, no useless social", q5c:"C. Enjoy lively atmosphere", q5d:"D. Flexible: alone or together",
+    q6:"Q6: Your favorite cup style?", q6a:"A. Simple & low-key", q6b:"B. Cute & healing", q6c:"C. Stylish & eye-catching", q6d:"D. Unique & ritual sense",
+    q7:"Q7: The meaning of 'tipsy' to you?", q7a:"A. A quiet shelter from the world", q7b:"B. Warm comfort for daily tiredness", q7c:"C. Release emotions & feel free", q7d:"D. Ritual of enjoying life",
+    q8:"Q8: Your drinking habit with food?", q8a:"A. No food, just enjoy drinking", q8b:"B. With desserts & snacks", q8c:"C. With party food & drinks", q8d:"D. Casual & simple",
+    q9:"Q9: Your ideal life pace?", q9a:"A. Slow & quiet alone time", q9b:"B. Warm & gentle daily life", q9c:"C. Lively & fun gatherings", q9d:"D. Free & romantic, no limits",
+    q10:"Q10: Your drinking pace?", q10a:"A. Sip slowly, enjoy quiet", q10b:"B. Light drink, relax comfortably", q10c:"C. Enjoy freely with atmosphere", q10d:"C. Gentle sip, keep elegant"
+  }
+};
+
+const form = document.getElementById("quiz");
+const btn = document.getElementById("submitBtn");
+const progress = document.getElementById("progressText");
+const langBtn = document.getElementById("langBtn");
+const zhText = document.getElementById("zhText");
+const enText = document.getElementById("enText");
+let currentLang = "zh";
+
+function updateLangBtn() {
+  if (currentLang === "zh") {
+    zhText.className = "lang-zh lang-active";
+    enText.className = "lang-en lang-inactive";
+  } else {
+    zhText.className = "lang-zh lang-inactive";
+    enText.className = "lang-en lang-active";
+  }
+}
+
+function renderLang() {
+  const dict = i18n[currentLang];
+  document.getElementById("pageTitle").innerText = dict.title;
+  document.getElementById("introText").innerHTML = dict.intro;
+  btn.innerText = dict.btn;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) el.innerText = dict[key];
+  });
+  updateProgress();
+  updateLangBtn();
+}
+
+function updateProgress() {
+  let total = 10;
+  let done = 0;
+  for (let i = 1; i <= total; i++) {
+    if (document.querySelector(`input[name="q${i}"]:checked`)) done++;
+  }
+  const dict = i18n[currentLang];
+  progress.innerText = dict.progress.replace("{done}", done);
+  btn.classList.toggle("active", done === total);
+}
+
+form.querySelectorAll("input").forEach(input => {
+  input.addEventListener("change", updateProgress);
+});
+
+langBtn.addEventListener("click", () => {
+  currentLang = currentLang === "zh" ? "en" : "zh";
+  renderLang();
+});
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  let done = 0;
+  for (let i = 1; i <= 10; i++) {
+    if (document.querySelector(`input[name="q${i}"]:checked`)) done++;
+  }
+  if (done < 10) {
+    alert(i18n[currentLang].alert);
+    return;
+  }
+  let score = 0;
+  const formData = new FormData(this);
+  for (let [k, v] of formData) score += parseInt(v);
+  window.open(`result.html?score=${score}&lang=${currentLang}`, "_blank");
+});
+
+renderLang();
+</script>
+</body>
+</html>
